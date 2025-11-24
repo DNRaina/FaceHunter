@@ -11,8 +11,8 @@ class ImageTransformer:
             return ImageEnhance.Brightness(img).enhance(factor)
         return img
 
-    def _remove_noise(self, img):
-        return img.filter(ImageFilter.MedianFilter(size=3))
+    # def _remove_noise(self, img):
+    #     return img.filter(ImageFilter.MedianFilter(size=3))
 
     def _sharpen_if_needed(self, img, blur_threshold=20, sharpen_factor=2.0):
         grayscale = img.convert('L')
@@ -22,13 +22,14 @@ class ImageTransformer:
         return img
 
     
-    def process(self, img):
+    def process(self, location):
+        img = Image.open(location)
         if img.mode != 'RGB':
             img = img.convert('RGB')
         
         img = ImageOps.pad(img, self.target_size, method=Image.Resampling.LANCZOS, color=(0, 0, 0))
         img = self._auto_brighten(img)
-        img = self._remove_noise(img)
+        # img = self._remove_noise(img)
         img = self._sharpen_if_needed(img)
         
         return np.array(img)
